@@ -2,11 +2,18 @@ import pymunk
 from pygame.color import THECOLORS
 import pygame
 import numpy as np
+import random
 
 class Tetrino:
-    def __init__(self, x, y, shape_type, color):
+    def __init__(self, x, y, shape_type=None, color=None):
         self.x = x
         self.y = y
+
+        if shape_type is None:
+            shape_type = random.choice(['I', 'O', 'T', 'S', 'Z', 'J', 'L'])
+        if color is None:
+            color = random.choice(['blue', 'red', 'green', 'yellow', 'magenta', 'cyan'])
+
         self.shape_type = shape_type
         self.color = THECOLORS[color]
         self.blocks = self.create_blocks()
@@ -14,6 +21,8 @@ class Tetrino:
         self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         self.body.position = x, y
         self.add_mass_and_moment()
+
+
 
     def create_blocks(self):
         blocks = []

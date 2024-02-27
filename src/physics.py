@@ -1,21 +1,32 @@
 import pymunk
 
 class Physics:
-    def __init__(self):
+    def __init__(self, play_area_rect):
         self.space = pymunk.Space()
-        self.space.gravity = (0, 98.1)  # Gravity directed downwards
+        self.space.gravity = (0, 98.1 * 2)  # Gravity directed downwards
 
-        # Create a floor at the bottom of the screen
-        # Assuming `window_height` is the height of your game window
-        window_height = 600
-        floor_height = window_height - 50  # Adjust `50` to place the floor as desired
-        floor_body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        floor_shape = pymunk.Segment(floor_body, (0, floor_height), (800, floor_height), 5)
-        floor_shape.elasticity = 0.4
-        floor_shape.friction = 0.5
-        self.space.add(floor_body, floor_shape)
+        # Define the boundaries of the play area
+        self.create_play_area_boundaries(play_area_rect)
+
+
+    def create_play_area_boundaries(self, rect):
+        x, y, width, height = rect
+        boundaries = [
+            pymunk.Segment(self.space.static_body, (x, y), (x + width, y), 1),  # Top
+            pymunk.Segment(self.space.static_body, (x, y), (x, y + height), 1),  # Left
+            pymunk.Segment(self.space.static_body, (x + width, y), (x + width, y + height), 1),  # Right
+            pymunk.Segment(self.space.static_body, (x, y + height), (x + width, y + height), 1)  # Bottom
+        ]
+        for boundary in boundaries:
+            boundary.elasticity = 0.4
+            boundary.friction = 0.5
+        self.space.add(*boundaries)
+
 
     def add_tetrino(self, tetrino):
+        # Assign collision type to tetrino
+        for shape in tetrino.shapes:
+            shape.collision_type = 1
         tetrino.add_to_physics_space(self.space)
 
     def remove_tetrino(self, tetrino):
