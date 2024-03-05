@@ -44,3 +44,11 @@ class Game:
             self.clock.tick(60)
         pygame.quit()
         sys.exit()
+
+
+    def reset(self):
+        for t in self.tetrinos:
+            self.physics.remove_tetrino(t)
+        self.tetrinos = []
+        self.spawn_new_tetrino()
+        self.running = True

@@ -28,8 +28,6 @@ class Controls:
             self.game.current_tetrino.rotate(clockwise=True)
         elif key == pygame.K_DOWN:
             self.game.current_tetrino.rotate(clockwise=False)
-        elif key == pygame.K_SPACE:
-            self.game.spawn_new_tetrino()
 
     def is_within_left_bound(self):
         # Calculate the leftmost position of any block in the Tetrino
@@ -44,6 +42,14 @@ class Controls:
         # Get the right boundary of the play area
         right_bound = self.game.play_area_rect[0] + self.game.play_area_rect[2]
         return rightmost_block_edge < right_bound
+    
+    def check_collision_with_roof(self):
+        for tetrino in self.game.tetrinos:
+            cur_pos = self.get_rotated_block_positions(tetrino) 
+            for x, y in cur_pos:
+                if y <= 0:  
+                    return True   
+        return False  # No collision with the roof        
 
 
     def check_collision_with_floor_or_tetrinos(self):
@@ -62,9 +68,14 @@ class Controls:
                     settled_blocks_world_positions = self.get_rotated_block_positions(settled_tetrino)
                     for current_block_pos in current_blocks_world_positions:
                         for settled_block_pos in settled_blocks_world_positions:
-                            # Check if the current block overlaps with any settled block
+                            if settled_block_pos[1] < 100:
+                                self.game.reset()
+                                return False
                             if (abs(current_block_pos[0] - settled_block_pos[0]) < 20 and
                                     abs(current_block_pos[1] - settled_block_pos[1]) < 20):
+                                if current_block_pos[1] < 100:
+                                    self.game.reset()
+                                    return False
                                 return True  # Collision with another Tetrino
 
             return False  # No collisions
