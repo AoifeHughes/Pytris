@@ -12,6 +12,12 @@ class Controls:
             elif event.type == pygame.KEYDOWN:
                 self.process_keydown(event.key)
 
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.game.pause_button_rect.collidepoint(event.pos):
+                    self.game.paused = not self.game.paused
+                elif self.game.reset_button_rect.collidepoint(event.pos):
+                    self.game.reset()
+
         if self.check_collision_with_floor_or_tetrinos():
             self.game.spawn_new_tetrino()
 
@@ -19,11 +25,11 @@ class Controls:
         if key == pygame.K_LEFT:
             # Check if moving left is within bounds
             if self.is_within_left_bound():
-                self.game.current_tetrino.body.position += (-10, 0)
+                self.game.current_tetrino.body.position += (-self.game.config['movement_rate'], 0)
         elif key == pygame.K_RIGHT:
             # Check if moving right is within bounds
             if self.is_within_right_bound():
-                self.game.current_tetrino.body.position += (10, 0)
+                self.game.current_tetrino.body.position += (self.game.config['movement_rate'], 0)
         elif key == pygame.K_UP:
             self.game.current_tetrino.rotate(clockwise=True)
         elif key == pygame.K_DOWN:
@@ -31,14 +37,14 @@ class Controls:
 
     def is_within_left_bound(self):
         # Calculate the leftmost position of any block in the Tetrino
-        leftmost_block_edge = min(self.game.current_tetrino.body.position.x + (block[0] * 20) - 10 for block in self.game.current_tetrino.blocks)
+        leftmost_block_edge = min(self.game.current_tetrino.body.position.x + (block[0] * self.game.config['block_size']) - 10 for block in self.game.current_tetrino.blocks)
         # Get the left boundary of the play area
         left_bound = self.game.board.play_area_rect[0]
         return leftmost_block_edge > left_bound
 
     def is_within_right_bound(self):
         # Calculate the rightmost position of any block in the Tetrino
-        rightmost_block_edge = max(self.game.current_tetrino.body.position.x + (block[0] * 20) + 10 for block in self.game.current_tetrino.blocks)
+        rightmost_block_edge = max(self.game.current_tetrino.body.position.x + (block[0] * self.game.config['block_size']) + 10 for block in self.game.current_tetrino.blocks)
         # Get the right boundary of the play area
         right_bound = self.game.play_area_rect[0] + self.game.play_area_rect[2]
         return rightmost_block_edge < right_bound
@@ -59,7 +65,7 @@ class Controls:
             # Check collision with floor
             play_area_bottom = self.game.play_area_rect[1] + self.game.play_area_rect[3]
             for x, y in current_blocks_world_positions:
-                if y + 20 >= play_area_bottom:  # Assuming block size is 20
+                if y + self.game.config['block_size'] >= play_area_bottom:  # Assuming block size is 20
                     return True  # Collision with floor
 
             # Check collision with other Tetrinos
@@ -71,8 +77,8 @@ class Controls:
                             if settled_block_pos[1] < 100:
                                 self.game.reset()
                                 return False
-                            if (abs(current_block_pos[0] - settled_block_pos[0]) < 20 and
-                                    abs(current_block_pos[1] - settled_block_pos[1]) < 20):
+                            if (abs(current_block_pos[0] - settled_block_pos[0]) < self.game.config['block_size'] and
+                                    abs(current_block_pos[1] - settled_block_pos[1]) < self.game.config['block_size']):
                                 if current_block_pos[1] < 100:
                                     self.game.reset()
                                     return False
@@ -87,7 +93,7 @@ class Controls:
         cx, cy = tetrino.body.position  # Center position of the Tetrino
         for block in tetrino.blocks:
             # Calculate block's position relative to Tetrino's center, considering rotation
-            local_x, local_y = block[0] * 20, block[1] * 20  # Assuming block size is 20
+            local_x, local_y = block[0] * self.game.config['block_size'], block[1] * self.game.config['block_size']  # Assuming block size is 20
             rotated_x = cx + local_x * np.cos(angle) - local_y * np.sin(angle)
             rotated_y = cy + local_x * np.sin(angle) + local_y * np.cos(angle)
             positions.append((rotated_x, rotated_y))

@@ -5,10 +5,10 @@ import numpy as np
 import random
 
 class Tetrino:
-    def __init__(self, x, y, shape_type=None, color=None):
+    def __init__(self, x, y, game, shape_type=None, color=None):
         self.x = x
         self.y = y
-
+        self.game = game
         if shape_type is None:
             shape_type = random.choice(['I', 'O', 'T', 'S', 'Z', 'J', 'L'])
         if color is None:
@@ -46,7 +46,7 @@ class Tetrino:
     def add_mass_and_moment(self):
         # Calculate the moment for a box which approximates the tetrino
         mass = 1.0  # Arbitrary mass
-        moment = pymunk.moment_for_box(mass, (20, 20))  # Approximate the tetrino as a box
+        moment = pymunk.moment_for_box(mass, (self.game.config['block_size'], self.game.config['block_size']))  # Approximate the tetrino as a box
         self.body.mass = mass
         self.body.moment = moment
 
@@ -54,7 +54,7 @@ class Tetrino:
         space.add(self.body)
         for block in self.blocks:
             offset_x, offset_y = block
-            width, height = 20, 20  # Block size
+            width, height = self.game.config['block_size'], self.game.config['block_size']  # Block size
             vertices = [(-width / 2, -height / 2), (-width / 2, height / 2), (width / 2, height / 2), (width / 2, -height / 2)]
             vertices = [(x + offset_x * width, y + offset_y * height) for x, y in vertices]
             shape = pymunk.Poly(self.body, vertices)
