@@ -1,12 +1,12 @@
 import pymunk
 
 class Physics:
-    def __init__(self, play_area_rect):
+    def __init__(self, config):
         self.space = pymunk.Space()
         self.space.gravity = (0, 98.1 * 5)  # Gravity directed downwards
-
+        self.play_area_rect = config['play_area_rect']
         # Define the boundaries of the play area
-        self.create_play_area_boundaries(play_area_rect)
+        self.create_play_area_boundaries(self.play_area_rect)
 
 
     def create_play_area_boundaries(self, rect):

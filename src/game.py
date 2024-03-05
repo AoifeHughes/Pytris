@@ -8,12 +8,13 @@ from src.controls import Controls
 from src.board import Board
 
 class Game:
-    def __init__(self, screen):
+    def __init__(self, screen, config):
         self.screen = screen
+        self.config = config
         self.running = True
         self.clock = pygame.time.Clock()
-        self.play_area_rect = (250, 0, 300, 600)  # Adjust based on your screen size
-        self.physics = Physics(self.play_area_rect)
+        self.play_area_rect = config['play_area_rect']
+        self.physics = Physics(self.play_area_rect, config)
         self.board = Board(self.physics, self.play_area_rect, screen)
         self.spawn_location = (300, 50)
         self.controls = Controls(self)
