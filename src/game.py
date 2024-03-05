@@ -28,6 +28,12 @@ class Game:
         self.pause_button_rect = pygame.Rect(config['UI_rect'][0], config['UI_rect'][1], config['button_size'][0], config['button_size'][1])
         self.reset_button_rect = pygame.Rect(config['UI_rect'][0], config['UI_rect'][1] + 60, config['button_size'][0], config['button_size'][1])
 
+        self.slider_rect = pygame.Rect(config['slider_rect'])
+        self.slider_button_rect = pygame.Rect(self.slider_rect.x, self.slider_rect.y - 5, 10, self.slider_rect.height + 10)  # Slider button
+        self.slider_value = 1.0  # Default gravity multiplier
+        self.dragging_slider = False
+
+
         # Score Management
         self.current_score = 0
         self.high_score = 0
@@ -55,14 +61,13 @@ class Game:
             self.controls.handle_events()
             if not self.paused:
                 self.update()
+                self.elapsed_time += 1/60
             self.draw()
             pygame.display.flip()
-            self.elapsed_time += 1/60
             self.calculate_score()
             self.clock.tick(60)
         pygame.quit()
         sys.exit()
-
 
 
     def draw_ui(self):
@@ -83,6 +88,14 @@ class Game:
         # Draw High Score
         high_score_text = self.ui_font.render(f'High Score: {self.high_score}', True, (255, 255, 255))
         self.screen.blit(high_score_text, (self.config['UI_rect'][0], self.config['UI_rect'][1] + 150))
+
+        # draw gravity slider
+        pygame.draw.rect(self.screen, (180, 180, 180), self.slider_rect)
+        pygame.draw.rect(self.screen, (100, 100, 100), self.slider_button_rect)
+
+        # Draw the label
+        label_text = self.ui_font.render('Gravity', True, (255, 255, 255))
+        self.screen.blit(label_text, (self.config['UI_rect'][0], self.slider_rect.y - 30))
 
 
 

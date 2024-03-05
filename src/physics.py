@@ -20,6 +20,8 @@ class Physics:
             boundary.friction = 0.5
         self.space.add(*boundaries)
 
+    def update_gravity(self, value):
+        self.space.gravity = (0, value)
 
     def add_tetrino(self, tetrino):
         # Assign collision type to tetrino

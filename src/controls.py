@@ -18,6 +18,17 @@ class Controls:
                 elif self.game.reset_button_rect.collidepoint(event.pos):
                     self.game.reset()
 
+                if self.game.slider_button_rect.collidepoint(event.pos):
+                    self.game.dragging_slider = True
+
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.game.dragging_slider = False
+
+            elif event.type == pygame.MOUSEMOTION and self.game.dragging_slider:
+                self.game.slider_button_rect.x = max(self.game.slider_rect.x, min(event.pos[0], self.game.slider_rect.right - self.game.slider_button_rect.width))
+                self.update_gravity()
+
+
         if self.check_collision_with_floor_or_tetrinos():
             self.game.spawn_new_tetrino()
 
@@ -98,3 +109,11 @@ class Controls:
             rotated_y = cy + local_x * np.sin(angle) + local_y * np.cos(angle)
             positions.append((rotated_x, rotated_y))
         return positions
+    
+
+    def update_gravity(self):
+        # Update the gravity based on the slider position
+        relative_position = (self.game.slider_button_rect.x - self.game.slider_rect.x) / (self.game.slider_rect.width - self.game.slider_button_rect.width)
+        gravity_range = self.game.config['slider_range']
+        self.slider_value = gravity_range[0] + (gravity_range[1] - gravity_range[0]) * relative_position
+        self.game.physics.update_gravity(self.slider_value * self.game.config['gravity'])

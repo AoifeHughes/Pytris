@@ -55,7 +55,6 @@ class Tetrino:
         for block in self.blocks:
             offset_x, offset_y = block
             width, height = self.game.config['block_size'], self.game.config['block_size']  # Block size
-            print(width, height)
             vertices = [(-width / 2, -height / 2), (-width / 2, height / 2), (width / 2, height / 2), (width / 2, -height / 2)]
             vertices = [(x + offset_x * width, y + offset_y * height) for x, y in vertices]
             shape = pymunk.Poly(self.body, vertices)
