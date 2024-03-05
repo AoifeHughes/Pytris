@@ -3,7 +3,7 @@ import pymunk
 class Physics:
     def __init__(self, play_area_rect):
         self.space = pymunk.Space()
-        self.space.gravity = (0, 98.1 * 2)  # Gravity directed downwards
+        self.space.gravity = (0, 98.1 * 5)  # Gravity directed downwards
 
         # Define the boundaries of the play area
         self.create_play_area_boundaries(play_area_rect)
