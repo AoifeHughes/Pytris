@@ -1,12 +1,11 @@
 {
     "window_size": [800, 600],
-    "block_size": 20,
+    "block_size": 25,
     "play_area_rect": [250, 0, 300, 600],
     "gravity": 981,
     "gravity_factor": 0.5,
     "spawn_location": [300, 50],
     "movement_rate" : 10,
-    "block_size": 20,
     "UI_rect": [600, 100, 200, 800],
     "text_size": 24,
     "button_size": [100, 50]

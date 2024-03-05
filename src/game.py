@@ -1,7 +1,7 @@
 import pygame
-import pymunk
 import sys
-import random
+from time import time
+import numpy as np
 from src.physics import Physics
 from src.tetrino import Tetrino
 from src.controls import Controls
@@ -21,6 +21,7 @@ class Game:
         self.controls = Controls(self)
         self.tetrinos = []
         self.spawn_new_tetrino()
+        self.elapsed_time = 0
 
         # UI Elements
         self.ui_font = pygame.font.Font(None, config['text_size'])
@@ -39,6 +40,8 @@ class Game:
     def update(self):
         self.physics.space.step(1/60.0)        
 
+    def calculate_score(self):
+        self.current_score = np.around((len(self.tetrinos) / self.elapsed_time) * 10, 2 )
 
     def draw(self):
         self.screen.fill((0, 0, 0))
@@ -54,6 +57,8 @@ class Game:
                 self.update()
             self.draw()
             pygame.display.flip()
+            self.elapsed_time += 1/60
+            self.calculate_score()
             self.clock.tick(60)
         pygame.quit()
         sys.exit()
@@ -86,4 +91,7 @@ class Game:
             self.physics.remove_tetrino(t)
         self.tetrinos = []
         self.spawn_new_tetrino()
+        if self.current_score > self.high_score:
+            self.high_score = self.current_score
+        self.elapsed_time = 0
         self.running = True
