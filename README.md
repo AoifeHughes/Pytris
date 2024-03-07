@@ -40,6 +40,10 @@ Once you've installed Pytris's dependencies, you can run the game with the follo
 python pytris.py
 ```
 
+### Modifications
+
+See the [config.json](config.json) file for the game's settings. You can modify the game's settings by changing the values in this file.
+
 ## Playing the game 
 
 ### Controls
