@@ -1,4 +1,5 @@
-![Pytris Logo](./images/logo.png){:width="50%"}
+<img src="./images/logo.png" alt="PyTris" width="50%">
+
 
 # Pytris
 
